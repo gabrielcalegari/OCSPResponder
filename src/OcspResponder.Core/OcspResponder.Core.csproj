@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -14,6 +14,12 @@
     <Version>1.0.0-rc2</Version>
     <PackageTags>csharp, ocsp-responder, netstandard, ocsp</PackageTags>
     <Copyright>2018 © Gabriel Calegari</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <LangVersion>latest</LangVersion>
+      <DocumentationFile />
   </PropertyGroup>
 
   <ItemGroup>
