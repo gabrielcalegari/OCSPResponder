@@ -13,8 +13,10 @@ OCSPResponder is a library that enables you to easily create an OCSP Responder i
 
 0. Install [OCSPResponder.Core](http://nuget.org/List/Packages/OSCPResponder.Core) via [NuGet](http://nuget.org).
 1. Implement the **IOcspResponderRepository** interface for your CA.
-2. Create a WebAPI Controller or a HttpHandler and call **OcspResponder.Respond()** passing the **HttpRequestMessage**.
-3. Done! You've been configured your OCSP Responder.
+2. Configure in your Dependency Injector to use the class **OcspResponder** for the interface **IOcspResponder**.
+3. Configure in your Dependency Injector to use the class that you implemented for the interface **IOcspResponderRepository**.
+4. Create a WebAPI Controller or a HttpHandler and call **OcspResponder.Respond()** passing the **HttpRequestMessage**.
+5. Done! You've been configured your OCSP Responder.
 
 ## Example
 
