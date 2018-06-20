@@ -4,6 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>OcspResponder.Core</AssemblyName>
     <RootNamespace>OcspResponder.Core</RootNamespace>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Gabriel Calegari</Authors>
+    <Description>A .NET facility to create an OCSP Responder</Description>
+    <PackageLicenseUrl>https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/gabrielcalegari/OCSPResponder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/gabrielcalegari/OCSPResponder</RepositoryUrl>
+    <Version>1.0.0-rc</Version>
+    <PackageTags>csharp, ocsp-responder, netstandard, ocsp</PackageTags>
+    <Copyright />
   </PropertyGroup>
 
   <ItemGroup>
