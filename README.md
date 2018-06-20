@@ -2,7 +2,7 @@
 A .NET facility to create an OCSP Responder
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lhqukqop1eh385wt?svg=true)](https://ci.appveyor.com/project/gabrielcalegari/ocspresponder)
-[![NuGet Version](http://img.shields.io/nuget/v/OcspResponder.Core.svg?style=flat)](https://www.nuget.org/packages/OcspResponder.Core)
+[![NuGet Version](http://img.shields.io/nuget/vpre/OcspResponder.Core.svg)](https://www.nuget.org/packages/OcspResponder.Core)
 [![License](https://img.shields.io/badge/license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## What is this?
