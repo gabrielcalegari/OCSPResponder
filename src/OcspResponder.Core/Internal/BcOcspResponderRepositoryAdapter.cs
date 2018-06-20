@@ -1,14 +1,13 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using OcspResponder.Core.Interfaces;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace OcspResponder.Core
+namespace OcspResponder.Core.Internal
 {
     /// <inheritdoc />
     internal class BcOcspResponderRepositoryAdapter : IBcOcspResponderRepository

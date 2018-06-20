@@ -5,7 +5,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
 using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
 
-namespace OcspResponder.Core.Interfaces
+namespace OcspResponder.Core.Internal
 {
     /// <summary>
     /// Adapter from <see cref="IOcspResponderRepository"/> for BouncyCastle's library

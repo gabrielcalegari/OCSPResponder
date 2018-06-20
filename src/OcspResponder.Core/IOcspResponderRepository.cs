@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace OcspResponder.Core.Interfaces
+namespace OcspResponder.Core
 {
     /// <summary>
     /// Contract that an OCSP Responder uses to validate a certificate in a CA repository

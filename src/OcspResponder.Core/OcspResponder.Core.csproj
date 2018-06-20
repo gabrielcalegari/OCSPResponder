@@ -11,9 +11,9 @@
     <PackageLicenseUrl>https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/gabrielcalegari/OCSPResponder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/gabrielcalegari/OCSPResponder</RepositoryUrl>
-    <Version>1.0.0-rc</Version>
+    <Version>1.0.0-rc2</Version>
     <PackageTags>csharp, ocsp-responder, netstandard, ocsp</PackageTags>
-    <Copyright />
+    <Copyright>2018 © Gabriel Calegari</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

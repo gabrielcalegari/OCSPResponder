@@ -1,7 +1,7 @@
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Ocsp;
 
-namespace OcspResponder.Core.Extensions
+namespace OcspResponder.Core.Internal
 {
     /// <summary>
     /// Extensions for OcspObjectIdentifiers

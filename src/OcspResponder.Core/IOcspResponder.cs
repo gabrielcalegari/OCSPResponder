@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace OcspResponder.Core.Interfaces
+namespace OcspResponder.Core
 {
     public interface IOcspResponder
     {
