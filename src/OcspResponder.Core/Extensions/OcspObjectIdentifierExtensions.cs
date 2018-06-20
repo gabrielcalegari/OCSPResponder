@@ -6,7 +6,7 @@ namespace OcspResponder.Core.Extensions
     /// <summary>
     /// Extensions for OcspObjectIdentifiers
     /// </summary>
-    public class OcspObjectIdentifierExtensions : OcspObjectIdentifiers
+    internal class OcspObjectIdentifierExtensions : OcspObjectIdentifiers
     {
         public static readonly DerObjectIdentifier PkixOscpPrefSigAlgs = new DerObjectIdentifier(PkixOcsp + ".8");
 
