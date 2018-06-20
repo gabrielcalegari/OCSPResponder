@@ -1,6 +1,10 @@
 # OCSPResponder
 A .NET facility to create an OCSP Responder
 
+[![Build status](https://ci.appveyor.com/api/projects/status/lhqukqop1eh385wt?svg=true)](https://ci.appveyor.com/project/gabrielcalegari/ocspresponder)
+[![NuGet Version](http://img.shields.io/nuget/v/OcspResponder.Core.svg?style=flat)](https://www.nuget.org/packages/OcspResponder.Core)
+[![License](https://img.shields.io/badge/license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 ## What is this?
 
 OCSPResponder is a library that enables you to easily create an OCSP Responder in .NET. All you need is to implement an interface for the CA/Authorized Responder. It follows the OCSP protocol defined in [RFC 6960](https://tools.ietf.org/html/rfc6960).
@@ -40,3 +44,14 @@ public class OcspController : Controller
     }
 }
 ```
+
+## License
+
+Code by Gabriel Calegari. Copyright 2018 Gabriel Calegari.
+
+This library is intended to be used in both open-source and commercial environments. It is under Apache 2.0 license.
+
+Refer to the [LICENSE](https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE) for detailed information. 
+
+## Any questions, comments or additions?
+If you have a feature request or bug report, leave an issue on the [issues page](https://github.com/gabrielcalegari/OCSPResponder/issues) or send a [pull request](https://github.com/gabrielcalegari/OCSPResponder/pulls). For general questions and comments, use the [StackOverflow](https://stackoverflow.com/) forum.
