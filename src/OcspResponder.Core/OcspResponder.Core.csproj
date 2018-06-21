@@ -11,7 +11,7 @@
     <PackageLicenseUrl>https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/gabrielcalegari/OCSPResponder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/gabrielcalegari/OCSPResponder</RepositoryUrl>
-    <Version>1.0.0-rc2</Version>
+    <Version>1.0.0-rc3</Version>
     <PackageTags>csharp, ocsp-responder, netstandard, ocsp</PackageTags>
     <Copyright>2018 © Gabriel Calegari</Copyright>
   </PropertyGroup>
@@ -21,6 +21,10 @@
       <LangVersion>latest</LangVersion>
       <DocumentationFile />
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="HttpRequest.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove=".gitignore" />

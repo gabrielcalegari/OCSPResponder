@@ -56,19 +56,21 @@ namespace OcspResponder.Core
                 var serialNumber = certificateId.SerialNumber;
 
                 CertificateStatus certificateStatus;
-                if (await OcspResponderRepository.IsCaCompromised(out var compromisedDate))
+                CaCompromisedStatus caCompromisedStatus = await OcspResponderRepository.IsCaCompromised();
+                if (caCompromisedStatus.IsCompromised)
                 {
                     // See section 2.7 of RFC 6960
-                    certificateStatus = new RevokedStatus(compromisedDate.Value, (int)RevocationReason.CACompromise);
+                    certificateStatus = new RevokedStatus(caCompromisedStatus.CompromisedDate.Value, (int)RevocationReason.CACompromise);
                 }
                 else
                 {
                     // Se section 2.2 of RFC 6960
                     if (await OcspResponderRepository.SerialExists(serialNumber))
                     {
-                        certificateStatus = await OcspResponderRepository.SerialIsRevoked(serialNumber, out var revokedInfo)
-                            ? new RevokedStatus(revokedInfo.Date, (int)revokedInfo.Reason)
-                            : CertificateStatus.Good;
+                        var status = await OcspResponderRepository.SerialIsRevoked(serialNumber);
+                        certificateStatus = status.IsRevoked
+                            ? new RevokedStatus(status.RevokedInfo.Date, (int)status.RevokedInfo.Reason)
+                            :  CertificateStatus.Good;
                     }
                     else
                     {

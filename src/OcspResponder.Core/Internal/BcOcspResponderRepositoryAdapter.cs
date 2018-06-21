@@ -19,15 +19,15 @@ namespace OcspResponder.Core.Internal
         }
 
         /// <inheritdoc />
-        public Task<bool> SerialIsRevoked(BigInteger serial, out RevokedInfo revokedInfo)
+        public Task<CertificateRevocationStatus> SerialIsRevoked(BigInteger serial)
         {
-            return OcspResponderRepository.SerialIsRevoked(serial.ToString(), out revokedInfo);
+            return OcspResponderRepository.SerialIsRevoked(serial.ToString());
         }
 
         /// <inheritdoc />
-        public Task<bool> IsCaCompromised(out DateTime? compromisedDate)
+        public Task<CaCompromisedStatus> IsCaCompromised()
         {
-            return OcspResponderRepository.IsCaCompromised(out compromisedDate);
+            return OcspResponderRepository.IsCaCompromised();
         }
 
         /// <inheritdoc />

@@ -23,16 +23,14 @@ namespace OcspResponder.Core.Internal
         /// Checks whether the serial is revoked for this CA repository.
         /// </summary>
         /// <param name="serial">serial</param>
-        /// <param name="revokedInfo">info about revocation</param>
-        /// <returns><c>true</c> if the serial is revoked; otherwise, false</returns>
-        Task<bool> SerialIsRevoked(BigInteger serial, out RevokedInfo revokedInfo);
+        /// <returns>A <see cref="CertificateRevocationStatus"/> containing whether the certificate is revoked and more info</returns>
+        Task<CertificateRevocationStatus> SerialIsRevoked(BigInteger serial);
 
         /// <summary>
         /// Checks whether the CA is compromised.
         /// </summary>
-        /// <param name="compromisedDate">date when the CA was compromised</param>
-        /// <returns><c>true</c> if the ca is compromised; otherwise, false</returns>
-        Task<bool> IsCaCompromised(out DateTime? compromisedDate);
+        /// <returns>A <see cref="CaCompromisedStatus"/> containing whether the CA is revoked and when it happens</returns>
+        Task<CaCompromisedStatus> IsCaCompromised();
 
         /// <summary>
         /// Gets the private key of the CA or its designated responder
