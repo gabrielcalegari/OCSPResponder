@@ -65,30 +65,32 @@ public class OcspController : Controller
 **/Controllers/OcspController.cs**
 
 ```csharp
-    [Route("api/ocsp")]
-    public class OcspController : Controller
+[Route("api/ocsp")]
+public class OcspController : Controller
+{
+    [HttpGet]
+    public async Task<IActionResult> Get(string encoded)
     {
-        [HttpGet]
-        public async Task<IActionResult> Get(string encoded)
-        {          
-            var ocspHttpResponse =  await OcspResponder.Respond(new OcspHttpRequest());
-            return new OcspActionResult(ocspHttpResponse);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post()
-        {
-            var ocspHttpResponse = await OcspResponder.Respond(new OcspHttpRequest());
-            return new OcspActionResult(ocspHttpResponse);
-        }
-
-        private IOcspResponder OcspResponder { get; }
-
-        public OcspController(IOcspResponder ocspResponder)
-        {
-            OcspResponder = ocspResponder;
-        }
+        var ocspHttpRequest = await Request.ToOcspHttpRequest();
+        var ocspHttpResponse =  await OcspResponder.Respond(ocspHttpRequest);
+        return new OcspActionResult(ocspHttpResponse);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Post()
+    {
+        var ocspHttpRequest = await Request.ToOcspHttpRequest();
+        var ocspHttpResponse = await OcspResponder.Respond(ocspHttpRequest);
+        return new OcspActionResult(ocspHttpResponse);
+    }
+
+    private IOcspResponder OcspResponder { get; }
+
+    public OcspController(IOcspResponder ocspResponder)
+    {
+        OcspResponder = ocspResponder;
+    }
+}
 ```
 
 ## License
