@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.0-rc</Version>
+    <Authors>Gabriel Calegari</Authors>
+    <Company>Gabriel Calegari</Company>
+    <Description>A .NET facility to create an OCSP Responder for AspNetCore</Description>
+    <Copyright>2018 © Gabriel Calegari</Copyright>
+    <PackageLicenseUrl>https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/gabrielcalegari/OCSPResponder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/gabrielcalegari/OCSPResponder</RepositoryUrl>
+    <PackageTags>csharp, ocsp-responder, ocsp, netcore</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
+    <PackageReference Include="OcspResponder.Core" Version="1.0.0-rc4" />
+  </ItemGroup>
+
+</Project>

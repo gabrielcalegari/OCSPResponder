@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OcspResponder.Core", "src\OcspResponder.Core\OcspResponder.Core.csproj", "{1B22BAD1-37A1-4E1C-9115-E422794EBD4C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OcspResponder.AspNetCore", "src\OcspResponder.AspNetCore\OcspResponder.AspNetCore.csproj", "{BDA8CBA5-711D-493A-B85C-F416D03F6E68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1B22BAD1-37A1-4E1C-9115-E422794EBD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B22BAD1-37A1-4E1C-9115-E422794EBD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B22BAD1-37A1-4E1C-9115-E422794EBD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDA8CBA5-711D-493A-B85C-F416D03F6E68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDA8CBA5-711D-493A-B85C-F416D03F6E68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDA8CBA5-711D-493A-B85C-F416D03F6E68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDA8CBA5-711D-493A-B85C-F416D03F6E68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using Common.Logging;
@@ -19,7 +18,7 @@ namespace OcspResponder.Core
     /// </summary>
     public class OcspResponder : IOcspResponder
     {
-        public async Task<HttpResponseMessage> Respond(HttpRequestMessage httpRequest)
+        public async Task<OcspHttpResponse> Respond(OcspHttpRequest httpRequest)
         {
             try
             {
@@ -116,12 +115,12 @@ namespace OcspResponder.Core
         /// <summary>
         /// Retrieves the <see cref="OcspReq"/> from the request
         /// </summary>
-        /// <param name="httpRequest"><see cref="HttpRequestMessage"/></param>
+        /// <param name="httpRequest"><see cref="OcspHttpRequest"/></param>
         /// <returns><see cref="OcspReqResult"/> containing the <see cref="OcspReq"/></returns>
-        private async Task<OcspReqResult> GetOcspRequest(HttpRequestMessage httpRequest)
+        private async Task<OcspReqResult> GetOcspRequest(OcspHttpRequest httpRequest)
         {
             // Validates the header of the request
-            if (!Equals(httpRequest.Content.Headers.ContentType, new MediaTypeHeaderValue("application/ocsp-request")))
+            if (httpRequest.MediaType != "application/ocsp-request")
             {
                 return new OcspReqResult
                 {
@@ -134,7 +133,7 @@ namespace OcspResponder.Core
             OcspReq ocspRequest;
             try
             {
-                ocspRequest = await CreateOcspReqFromHttpRequest(httpRequest);
+                ocspRequest = CreateOcspReqFromHttpRequest(httpRequest);
             }
             catch(Exception e)
             {
@@ -181,41 +180,39 @@ namespace OcspResponder.Core
         }
 
         /// <summary>
-        /// Creates the <see cref="OcspReq"/> from <see cref="HttpRequestMessage"/>
+        /// Creates the <see cref="OcspReq"/> from <see cref="OcspHttpRequest"/>
         /// </summary>
-        /// <param name="httpRequest"><see cref="HttpRequestMessage"/></param>
+        /// <param name="httpRequest"><see cref="OcspHttpRequest"/></param>
         /// <returns><see cref="OcspReq"/></returns>
-        private async Task<OcspReq> CreateOcspReqFromHttpRequest(HttpRequestMessage httpRequest)
+        private OcspReq CreateOcspReqFromHttpRequest(OcspHttpRequest httpRequest)
         {
-            var httpMethod = httpRequest.Method;
-            switch (httpMethod.Method.ToUpper())
+            switch (httpRequest.HttpMethod.ToUpper())
             {
                 case "GET":
                     return CreateOcspReqFromGet(httpRequest);
                 case "POST":
-                    return await CreateOcspReqFromPost(httpRequest);
+                    return CreateOcspReqFromPost(httpRequest);
                 default:
                     throw new HttpRequestException("Only GET and POST methods are allowed");
             }
         }
 
         /// <summary>
-        /// Creates the <see cref="OcspReq"/> from <see cref="HttpMethod.Post"/>
+        /// Creates the <see cref="OcspReq"/> from POST
         /// </summary>
-        /// <param name="httpRequest"><see cref="HttpRequestMessage"/></param>
+        /// <param name="httpRequest"><see cref="OcspHttpRequest"/></param>
         /// <returns><see cref="OcspReq"/></returns>
-        private async Task<OcspReq> CreateOcspReqFromPost(HttpRequestMessage httpRequest)
+        private OcspReq CreateOcspReqFromPost(OcspHttpRequest httpRequest)
         {
-            byte[] bytes = await httpRequest.Content.ReadAsByteArrayAsync();
-            return new OcspReq(bytes);
+            return new OcspReq(httpRequest.Content);
         }
 
         /// <summary>
-        /// Creates the <see cref="OcspReq"/> from <see cref="HttpMethod.Get"/>
+        /// Creates the <see cref="OcspReq"/> from GET/>
         /// </summary>
-        /// <param name="httpRequest"><see cref="HttpRequestMessage"/></param>
+        /// <param name="httpRequest"><see cref="OcspHttpRequest"/></param>
         /// <returns><see cref="OcspReq"/></returns>
-        private OcspReq CreateOcspReqFromGet(HttpRequestMessage httpRequest)
+        private OcspReq CreateOcspReqFromGet(OcspHttpRequest httpRequest)
         {
             string encodedOcspRequest = HttpUtility.UrlDecode(httpRequest.RequestUri.Segments.Last());
             byte[] bytes = Convert.FromBase64String(encodedOcspRequest);
@@ -223,18 +220,13 @@ namespace OcspResponder.Core
         }
 
         /// <summary>
-        /// Creates a <see cref="HttpResponseMessage"/> including the ocsp response as byte array
+        /// Creates a <see cref="OcspHttpResponse"/> including the ocsp response as byte array
         /// </summary>
         /// <param name="ocspResponseBytes">ocsp response as byte array</param>
-        /// <returns><see cref="HttpResponseMessage"/></returns>
-        private HttpResponseMessage CreateResponse(byte[] ocspResponseBytes)
+        /// <returns><see cref="OcspHttpResponse"/></returns>
+        private OcspHttpResponse CreateResponse(byte[] ocspResponseBytes)
         {
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ByteArrayContent(ocspResponseBytes)
-            };
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/ocsp-response");
-            return response;
+            return new OcspHttpResponse(ocspResponseBytes, "application/ocsp-response", HttpStatusCode.OK);
         }
 
         private static OCSPRespGenerator OcspResponseGenerator { get; } = new OCSPRespGenerator();
