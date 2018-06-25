@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.0-rc</Version>
+    <Version>1.0.0-rc2</Version>
     <Authors>Gabriel Calegari</Authors>
     <Company>Gabriel Calegari</Company>
     <Description>A .NET facility to create an OCSP Responder for AspNetCore</Description>

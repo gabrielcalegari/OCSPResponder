@@ -12,11 +12,8 @@ namespace OcspResponder.AspNetCore
         /// <inheritdoc />
         public async Task ExecuteResultAsync(ActionContext context)
         {
-            var objectResult = new ObjectResult(OcspHttpResponse.Content);
-            objectResult.StatusCode = (int)OcspHttpResponse.Status;
-            objectResult.ContentTypes.Add(OcspHttpResponse.MediaType);
-
-            await objectResult.ExecuteResultAsync(context);
+            var contentResult = new FileContentResult(OcspHttpResponse.Content, OcspHttpResponse.MediaType);
+            await contentResult.ExecuteResultAsync(context);
         }
 
         /// <summary>
