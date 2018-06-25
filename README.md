@@ -11,14 +11,16 @@ OCSPResponder is a library written in C# that enables you to easily create an OC
 
 ## How do I use it?
 
+### .NET Framework
+
 0. Install [OCSPResponder.Core](http://nuget.org/List/Packages/OSCPResponder.Core) via [NuGet](http://nuget.org).
 1. Implement the **IOcspResponderRepository** interface for your CA.
 2. Configure in your Dependency Injector to use the class **OcspResponder** for the interface **IOcspResponder**.
 3. Configure in your Dependency Injector to use the class that you implemented for the interface **IOcspResponderRepository**.
-4. Create a WebAPI Controller or a HttpHandler and call **OcspResponder.Respond()** passing the **HttpRequestMessage**.
+4. Create a WebAPI Controller and call **OcspResponder.Respond()** passing the **HttpRequestMessage.ToOcspHttpRequest()**.
 5. Done! You've been configured your OCSP Responder.
 
-## Example
+#### Example
 
 **/Controllers/OcspController.cs**
 
@@ -29,13 +31,15 @@ public class OcspController : Controller
     [Route("{encoded}"]
     public Task<HttpResponseMessage> Get(string encoded)
     {
-        return await OcspResponder.Respond(Request);
+        var ocspHttpResponse = await OcspResponder.Respond(Request.ToOcspHttpRequest());
+        return ocspHttpResponse.toHttpResponseMessage();
     }
     
     [Route("")]
     public Task<HttpResponseMessage> Post()
     {
-        return await OcspResponder.Respond(Request);
+        var ocspHttpResponse = await OcspResponder.Respond(Request.ToOcspHttpRequest());
+        return ocspHttpResponse.toHttpResponseMessage();
     }
     
     private IOcspResponder OcspResponder { get; }
@@ -45,6 +49,46 @@ public class OcspController : Controller
         OcspResponder = ocspResponder;
     }
 }
+```
+
+### .NET Core
+
+0. Install [OCSPResponder.AspNetCore](https://www.nuget.org/packages/OcspResponder.AspNetCore) via [NuGet](http://nuget.org). This package contains [OCSPResponder.Core](http://nuget.org/List/Packages/OSCPResponder.Core) as dependency.
+1. Implement the **IOcspResponderRepository** interface for your CA.
+2. Configure in your Dependency Injector to use the class **OcspResponder** for the interface **IOcspResponder**.
+3. Configure in your Dependency Injector to use the class that you implemented for the interface **IOcspResponderRepository**.
+4. Create a WebAPI Controller and call **OcspResponder.Respond()** passing the **HttpRequest.ToOcspRequest()**.
+5. Done! You've been configured your OCSP Responder.
+
+#### Example
+
+**/Controllers/OcspController.cs**
+
+```csharp
+    [Route("api/ocsp")]
+    public class OcspController : Controller
+    {
+        [HttpGet]
+        public async Task<IActionResult> Get(string encoded)
+        {          
+            var ocspHttpResponse =  await OcspResponder.Respond(new OcspHttpRequest());
+            return new OcspActionResult(ocspHttpResponse);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post()
+        {
+            var ocspHttpResponse = await OcspResponder.Respond(new OcspHttpRequest());
+            return new OcspActionResult(ocspHttpResponse);
+        }
+
+        private IOcspResponder OcspResponder { get; }
+
+        public OcspController(IOcspResponder ocspResponder)
+        {
+            OcspResponder = ocspResponder;
+        }
+    }
 ```
 
 ## License
