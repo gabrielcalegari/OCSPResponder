@@ -10,7 +10,7 @@ namespace OcspResponder.Core
         /// <summary>
         /// When it was revoked
         /// </summary>
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
 
         /// <summary>
         /// Reason for revocation

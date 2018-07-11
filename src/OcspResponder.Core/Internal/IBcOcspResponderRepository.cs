@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
@@ -16,50 +17,56 @@ namespace OcspResponder.Core.Internal
         /// Checks whether the serial exists for this CA repository
         /// </summary>
         /// <param name="serial">serial</param>
+        /// <param name="issuerCertificate"></param>
         /// <returns><c>true</c> if the serial exists; otherwise, false</returns>
-        Task<bool> SerialExists(BigInteger serial);
+        Task<bool> SerialExists(BigInteger serial, X509Certificate issuerCertificate);
 
         /// <summary>
         /// Checks whether the serial is revoked for this CA repository.
         /// </summary>
         /// <param name="serial">serial</param>
+        /// <param name="issuerCertificate"></param>
         /// <returns>A <see cref="CertificateRevocationStatus"/> containing whether the certificate is revoked and more info</returns>
-        Task<CertificateRevocationStatus> SerialIsRevoked(BigInteger serial);
+        Task<CertificateRevocationStatus> SerialIsRevoked(BigInteger serial, X509Certificate issuerCertificate);
 
         /// <summary>
         /// Checks whether the CA is compromised.
         /// </summary>
+        /// <param name="caCertificate"></param>
         /// <returns>A <see cref="CaCompromisedStatus"/> containing whether the CA is revoked and when it happens</returns>
-        Task<CaCompromisedStatus> IsCaCompromised();
+        Task<CaCompromisedStatus> IsCaCompromised(X509Certificate caCertificate);
 
         /// <summary>
         /// Gets the private key of the CA or its designated responder
         /// </summary>
+        /// <param name="caCertificate"></param>
         /// <returns>A <see cref="AsymmetricKeyParameter"/> that represents the private key of the CA</returns>
-        Task<AsymmetricKeyParameter> GetResponderPrivateKey();
+        Task<AsymmetricKeyParameter> GetResponderPrivateKey(X509Certificate caCertificate);
 
         /// <summary>
         /// Gets the subject of the CA or its designated responder
         /// </summary>
+        /// <param name="caCertificate"></param>
         /// <returns>A <see cref="X509Name"/> that represents the subject of the CA</returns>
-        Task<X509Name> GetResponderSubjectDn();
+        Task<X509Name> GetResponderSubjectDn(X509Certificate caCertificate);
 
         /// <summary>
         /// The certificate chain associated with the response signer.
         /// </summary>
+        /// <param name="issuerCertificate"></param>
         /// <returns>An array of <see cref="Org.BouncyCastle.X509.X509Certificate"/></returns>
-        Task<X509Certificate[]> GetChain();
+        Task<X509Certificate[]> GetChain(X509Certificate issuerCertificate);
 
         /// <summary>
-        /// Gets the issuer certificate that this repository is responsible to evaluate
+        /// Gets the issuer certificates that this repository is responsible to evaluate
         /// </summary>
-        /// <returns>A <see cref="X509Certificate"/> that represents the issuer's certificate</returns>
-        Task<X509Certificate> GetIssuerCertificate();
+        /// <returns>A enumerable of <see cref="X509Certificate"/> that represents the issuer's certificates</returns>
+        Task<IEnumerable<X509Certificate>> GetIssuerCertificates();
 
         /// <summary>
         /// Gets the date when the client should request the responder about the certificate status
         /// </summary>
         /// <returns>A <see cref="DateTime"/> that represents when the client should request the responder again</returns>
-        Task<DateTime> GetNextUpdate();
+        Task<DateTimeOffset> GetNextUpdate();
     }
 }

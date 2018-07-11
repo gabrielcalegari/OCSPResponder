@@ -9,6 +9,7 @@ using OcspResponder.Core.Internal;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Ocsp;
+using Org.BouncyCastle.X509;
 
 namespace OcspResponder.Core
 {
@@ -29,7 +30,7 @@ namespace OcspResponder.Core
                     return CreateResponse(OcspResponseGenerator.Generate(ocspReqResult.Status, null).GetEncoded());
                 }
 
-                OcspResp ocspResponse = await GetOcspDefinitiveResponse(ocspReqResult.OcspRequest);
+                OcspResp ocspResponse = await GetOcspDefinitiveResponse(ocspReqResult.OcspRequest, ocspReqResult.IssuerCertificate);
                 return CreateResponse(ocspResponse.GetEncoded());
             }
             catch (Exception e)
@@ -43,43 +44,47 @@ namespace OcspResponder.Core
         /// Gets the <see cref="OcspResp"/> for the <see cref="OcspReq"/>
         /// </summary>
         /// <param name="ocspRequest"></param>
+        /// <param name="issuerCertificate"></param>
         /// <returns></returns>
-        private async Task<OcspResp> GetOcspDefinitiveResponse(OcspReq ocspRequest)
+        private async Task<OcspResp> GetOcspDefinitiveResponse(OcspReq ocspRequest, X509Certificate issuerCertificate)
         {
-            var basicResponseGenerator = new BasicOcspRespGenerator(new RespID(await OcspResponderRepository.GetResponderSubjectDn()));
+            var basicResponseGenerator = new BasicOcspRespGenerator(
+                new RespID(
+                    await OcspResponderRepository.GetResponderSubjectDn(issuerCertificate)));
+
             var extensionsGenerator = new X509ExtensionsGenerator();
 
+            var nextUpdate = await OcspResponderRepository.GetNextUpdate();
             foreach (var request in ocspRequest.GetRequestList())
             {
                 var certificateId = request.GetCertID();
                 var serialNumber = certificateId.SerialNumber;
 
                 CertificateStatus certificateStatus;
-                CaCompromisedStatus caCompromisedStatus = await OcspResponderRepository.IsCaCompromised();
+                CaCompromisedStatus caCompromisedStatus = await OcspResponderRepository.IsCaCompromised(issuerCertificate);
                 if (caCompromisedStatus.IsCompromised)
                 {
                     // See section 2.7 of RFC 6960
-                    certificateStatus = new RevokedStatus(caCompromisedStatus.CompromisedDate.Value, (int)RevocationReason.CACompromise);
+                    certificateStatus = new RevokedStatus(caCompromisedStatus.CompromisedDate.Value.UtcDateTime, (int)RevocationReason.CACompromise);
                 }
                 else
                 {
                     // Se section 2.2 of RFC 6960
-                    if (await OcspResponderRepository.SerialExists(serialNumber))
+                    if (await OcspResponderRepository.SerialExists(serialNumber, issuerCertificate))
                     {
-                        var status = await OcspResponderRepository.SerialIsRevoked(serialNumber);
+                        var status = await OcspResponderRepository.SerialIsRevoked(serialNumber, issuerCertificate);
                         certificateStatus = status.IsRevoked
-                            ? new RevokedStatus(status.RevokedInfo.Date, (int)status.RevokedInfo.Reason)
+                            ? new RevokedStatus(status.RevokedInfo.Date.UtcDateTime, (int)status.RevokedInfo.Reason)
                             :  CertificateStatus.Good;
                     }
                     else
                     {
-
                         certificateStatus = new RevokedStatus(new DateTime(1970, 1, 1), CrlReason.CertificateHold);
                         extensionsGenerator.AddExtension(OcspObjectIdentifierExtensions.PkixOcspExtendedRevoke, false, (byte[])null);
                     }
                 }
 
-                basicResponseGenerator.AddResponse(certificateId, certificateStatus, DateTime.UtcNow, await OcspResponderRepository.GetNextUpdate(), null);
+                basicResponseGenerator.AddResponse(certificateId, certificateStatus, DateTimeOffset.UtcNow.DateTime, nextUpdate.UtcDateTime, null);
             }
 
             SetNonceExtension(ocspRequest, extensionsGenerator);
@@ -90,9 +95,9 @@ namespace OcspResponder.Core
             const string signatureAlgorithm = "sha256WithRSAEncryption";
             var basicOcspResponse = basicResponseGenerator.Generate(
                 signatureAlgorithm,
-                await OcspResponderRepository.GetResponderPrivateKey(),
-                await OcspResponderRepository.GetChain(),
-                await OcspResponderRepository.GetNextUpdate());
+                await OcspResponderRepository.GetResponderPrivateKey(issuerCertificate),
+                await OcspResponderRepository.GetChain(issuerCertificate),
+                nextUpdate.UtcDateTime);
 
             var ocspResponse = OcspResponseGenerator.Generate(OcspRespStatus.Successful, basicOcspResponse);
             return ocspResponse;
@@ -155,13 +160,23 @@ namespace OcspResponder.Core
                 };
             }
 
+            
             // Valitates whether the requests are of this CA's responsibility
-            var issuerCert = await OcspResponderRepository.GetIssuerCertificate();
-            foreach (var request in ocspRequest.GetRequestList())
+            X509Certificate issuerCertificate = null;
+            var issuerCerts = (await OcspResponderRepository.GetIssuerCertificates()).ToArray();
+            var list = ocspRequest.GetRequestList();
+            for (var i = 0; i < list.Length; i++)
             {
+                var request = list[i];
                 var certificateId = request.GetCertID();
-                bool issuerMatches = certificateId.MatchesIssuer(issuerCert);
-                if (!issuerMatches)
+                var recognizedIssuerCertificate = issuerCerts.SingleOrDefault(issuerCert => certificateId.MatchesIssuer(issuerCert));
+
+                if (i == 0)
+                {
+                    issuerCertificate = recognizedIssuerCertificate;
+                }
+
+                if (recognizedIssuerCertificate == null || !Equals(recognizedIssuerCertificate, issuerCertificate))
                 {
                     return new OcspReqResult
                     {
@@ -169,6 +184,8 @@ namespace OcspResponder.Core
                         Error = "Any certificate is not of this CA's responsibility"
                     };
                 }
+
+                issuerCertificate = recognizedIssuerCertificate;
             }
 
             // Validation passed so we return the ocspRequest with success status
@@ -176,6 +193,7 @@ namespace OcspResponder.Core
             {
                 Status = OcspRespStatus.Successful,
                 OcspRequest = ocspRequest,
+                IssuerCertificate = issuerCertificate
             };
         }
 

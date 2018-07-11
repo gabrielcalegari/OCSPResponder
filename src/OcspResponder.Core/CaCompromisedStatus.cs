@@ -15,6 +15,6 @@ namespace OcspResponder.Core
         /// <summary>
         /// When it was compromised
         /// </summary>
-        public DateTime? CompromisedDate { get; set; }
+        public DateTimeOffset? CompromisedDate { get; set; }
     }
 }
