@@ -42,13 +42,6 @@ namespace OcspResponder.Core
         Task<AsymmetricAlgorithm> GetResponderPrivateKey(X509Certificate2 caCertificate);
 
         /// <summary>
-        /// Gets the subject of the CA or its designated responder
-        /// </summary>
-        /// <param name="caCertificate"></param>
-        /// <returns>A <see cref="X500DistinguishedName"/> that represents the subject of the CA</returns>
-        Task<X500DistinguishedName> GetResponderSubjectDn(X509Certificate2 caCertificate);
-
-        /// <summary>
         /// The certificate chain associated with the response signer.
         /// </summary>
         /// <param name="issuerCertificate"></param>

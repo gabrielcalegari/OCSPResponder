@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.0-rc3</Version>
+    <Version>1.0.0-rc4</Version>
     <Authors>Gabriel Calegari</Authors>
     <Company>Gabriel Calegari</Company>
     <Description>A .NET facility to create an OCSP Responder for AspNetCore</Description>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
-    <PackageReference Include="OcspResponder.Core" Version="1.0.0-rc5" />
+    <PackageReference Include="OcspResponder.Core" Version="1.0.0-rc7" />
   </ItemGroup>
 
 </Project>

@@ -11,7 +11,7 @@
     <PackageLicenseUrl>https://github.com/gabrielcalegari/OCSPResponder/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/gabrielcalegari/OCSPResponder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/gabrielcalegari/OCSPResponder</RepositoryUrl>
-    <Version>1.0.0-rc5</Version>
+    <Version>1.0.0-rc7</Version>
     <PackageTags>csharp, ocsp-responder, netstandard, ocsp</PackageTags>
     <Copyright>2018 © Gabriel Calegari</Copyright>
   </PropertyGroup>
@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.2" />
   </ItemGroup>
 

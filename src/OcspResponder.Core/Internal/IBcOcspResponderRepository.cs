@@ -44,11 +44,11 @@ namespace OcspResponder.Core.Internal
         Task<AsymmetricKeyParameter> GetResponderPrivateKey(X509Certificate caCertificate);
 
         /// <summary>
-        /// Gets the subject of the CA or its designated responder
+        /// Gets the public key of the CA or its designated responder
         /// </summary>
         /// <param name="caCertificate"></param>
-        /// <returns>A <see cref="X509Name"/> that represents the subject of the CA</returns>
-        Task<X509Name> GetResponderSubjectDn(X509Certificate caCertificate);
+        /// <returns>A <see cref="AsymmetricKeyParameter"/> that represents the public key of the CA</returns>
+        Task<AsymmetricKeyParameter> GetResponderPublicKey(X509Certificate caCertificate);
 
         /// <summary>
         /// The certificate chain associated with the response signer.

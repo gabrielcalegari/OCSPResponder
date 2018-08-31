@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using Common.Logging;
 using OcspResponder.Core.Internal;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Asn1.X509;
@@ -26,7 +25,7 @@ namespace OcspResponder.Core
                 OcspReqResult ocspReqResult = await GetOcspRequest(httpRequest);
                 if (ocspReqResult.Status != OcspRespStatus.Successful)
                 {
-                    Log?.Warn(ocspReqResult.Error);
+                    Log.Warn(ocspReqResult.Error);
                     return CreateResponse(OcspResponseGenerator.Generate(ocspReqResult.Status, null).GetEncoded());
                 }
 
@@ -35,7 +34,7 @@ namespace OcspResponder.Core
             }
             catch (Exception e)
             {
-                Log?.Error(e);
+                Log.Error(e.Message);
                 return CreateResponse(OcspResponseGenerator.Generate(OcspRespStatus.InternalError, null).GetEncoded());
             }
         }
@@ -50,7 +49,7 @@ namespace OcspResponder.Core
         {
             var basicResponseGenerator = new BasicOcspRespGenerator(
                 new RespID(
-                    await OcspResponderRepository.GetResponderSubjectDn(issuerCertificate)));
+                    await OcspResponderRepository.GetResponderPublicKey(issuerCertificate)));
 
             var extensionsGenerator = new X509ExtensionsGenerator();
 
@@ -113,7 +112,7 @@ namespace OcspResponder.Core
             var nonce = ocspRequest.GetExtensionValue(OcspObjectIdentifiers.PkixOcspNonce);
             if (nonce != null)
             {
-                extensionsGenerator.AddExtension(OcspObjectIdentifiers.PkixOcspNonce, false, nonce);
+                extensionsGenerator.AddExtension(OcspObjectIdentifiers.PkixOcspNonce, false, nonce.GetOctets());
             }
         }
 
@@ -252,13 +251,13 @@ namespace OcspResponder.Core
         /// <inheritdoc cref="IBcOcspResponderRepository"/>
         private IBcOcspResponderRepository OcspResponderRepository { get; }
 
-        ///// <inheritdoc cref="ILog"/>
-        private ILog Log { get; }
+        /// <inheritdoc cref="IOcspLogger"/>
+        private IOcspLogger Log { get; }
 
-        public OcspResponder(IOcspResponderRepository ocspResponderRepository)
+        public OcspResponder(IOcspResponderRepository ocspResponderRepository, IOcspLogger logger)
         {
             OcspResponderRepository = new BcOcspResponderRepositoryAdapter(ocspResponderRepository);
-            Log = LogManager.GetLogger<OcspResponder>();
+            Log = logger;
         }
     }
 }

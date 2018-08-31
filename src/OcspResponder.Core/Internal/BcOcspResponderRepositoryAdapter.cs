@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
@@ -45,13 +44,12 @@ namespace OcspResponder.Core.Internal
             return DotNetUtilities.GetKeyPair(privateKey).Private;
         }
 
-        /// <param name="caCertificate"></param>
         /// <inheritdoc />
-        public async Task<X509Name> GetResponderSubjectDn(X509Certificate caCertificate)
+        public async Task<AsymmetricKeyParameter> GetResponderPublicKey(X509Certificate caCertificate)
         {
             var dotNetCertificate = new X509Certificate2(caCertificate.GetEncoded());
-            var subjectDn = await OcspResponderRepository.GetResponderSubjectDn(dotNetCertificate);
-            return new X509Name(subjectDn.Name);
+            var privateKey = await OcspResponderRepository.GetResponderPrivateKey(dotNetCertificate);
+            return DotNetUtilities.GetKeyPair(privateKey).Public;
         }
 
         /// <param name="issuerCertificate"></param>
