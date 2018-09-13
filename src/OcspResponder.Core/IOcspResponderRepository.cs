@@ -9,7 +9,7 @@ namespace OcspResponder.Core
     /// <summary>
     /// Contract that an OCSP Responder uses to validate a certificate in a CA repository
     /// </summary>
-    public interface IOcspResponderRepository
+    public interface IOcspResponderRepository : IDisposable
     {
         /// <summary>
         /// Checks whether the serial exists for this CA repository

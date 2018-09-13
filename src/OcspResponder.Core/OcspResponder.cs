@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using OcspResponder.Core.Internal;
+using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Ocsp;
@@ -77,9 +78,9 @@ namespace OcspResponder.Core
                             :  CertificateStatus.Good;
                     }
                     else
-                    {
+                    { 
                         certificateStatus = new RevokedStatus(new DateTime(1970, 1, 1), CrlReason.CertificateHold);
-                        extensionsGenerator.AddExtension(OcspObjectIdentifierExtensions.PkixOcspExtendedRevoke, false, (byte[])null);
+                        extensionsGenerator.AddExtension(OcspObjectIdentifierExtensions.PkixOcspExtendedRevoke, false, DerNull.Instance.GetDerEncoded());
                     }
                 }
 
