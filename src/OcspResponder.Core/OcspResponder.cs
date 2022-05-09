@@ -97,7 +97,7 @@ namespace OcspResponder.Core
                 signatureAlgorithm,
                 await OcspResponderRepository.GetResponderPrivateKey(issuerCertificate),
                 await OcspResponderRepository.GetChain(issuerCertificate),
-                nextUpdate.UtcDateTime);
+                DateTimeOffset.UtcNow.UtcDateTime);
 
             var ocspResponse = OcspResponseGenerator.Generate(OcspRespStatus.Successful, basicOcspResponse);
             return ocspResponse;
